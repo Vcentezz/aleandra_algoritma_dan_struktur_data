@@ -1,77 +1,79 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-struct Node {
-    int data;
-    Node* next;
-};
+const int MAX = 3;
+string queue[MAX];
+int front = -1, rear = -1;
 
-class Queue {
-private:
-    Node* front;
-    Node* rear;
+bool isFull() {
+    return rear == MAX - 1;
+}
 
-public:
-    Queue() {
-        front = NULL;
-        rear = NULL;
+bool isEmpty() {
+    return front == -1 || front > rear;
+}
+
+void enqueue(string nama) {
+    if (isFull()) {
+        cout << "Antrian penuh, tidak bisa menambahkan mahasiswa lagi." << endl;
+    } else {
+        if (front == -1) front = 0;
+        queue[++rear] = nama;
+        cout << nama << " telah masuk ke dalam antrian." << endl;
     }
+}
 
-    void enqueue(int data) {
-        Node* new_node = new Node();
-        new_node->data = data;
-        new_node->next = NULL;
+void dequeue() {
+    if (isEmpty()) {
+        cout << "Antrian kosong, tidak ada mahasiswa yang bisa dikeluarkan." << endl;
+    } else {
+        cout << queue[front] << " telah selesai dan keluar dari antrian." << endl;
+        front++;
+    }
+}
 
-        if (rear == NULL) {
-            front = new_node;
-            rear = new_node;
-            return;
+void tampilkan() {
+    if (isEmpty()) {
+        cout << "Antrian kosong." << endl;
+    } else {
+        cout << "Daftar mahasiswa dalam antrian: ";
+        for (int i = front; i <= rear; i++) {
+            cout << queue[i] << " ";
         }
-
-        rear->next = new_node;
-        rear = new_node;
+        cout << endl;
     }
-
-    void dequeue() {
-        if (front == NULL) {
-            cout << "Queue is empty." << endl;
-            return;
-        }
-
-        Node* temp = front;
-        front = front->next;
-
-        if (front == NULL)
-            rear = NULL;
-
-        delete temp;
-    }
-
-    int front_element() {
-        if (front == NULL) {
-            cout << "Queue is empty." << endl;
-            return -1;
-        }
-
-        return front->data;
-    }
-
-    bool is_empty() {
-        return (front == NULL);
-    }
-};
+}
 
 int main() {
-    Queue q;
+    int pilihan;
+    string nama;
 
-    q.enqueue(1);
-    q.enqueue(4);
-    q.enqueue(9);
+    do {
+        cout << "\nMenu:\n1. Tambah Mahasiswa (enqueue)\n2. Layani Mahasiswa (dequeue)\n3. Tampilkan Antrian\n4. Keluar\nPilih: ";
+        cin >> pilihan;
+        cin.ignore(); 
 
-    cout << "Front element is: " << q.front_element() << endl;
-    q.dequeue();
-    cout << "Front element is: " << q.front_element() << endl;
-    q.dequeue();
+        switch (pilihan) {
+            case 1:
+                cout << "Masukkan nama mahasiswa: ";
+                getline(cin, nama);
+                enqueue(nama);
+                break;
+            case 2:
+                dequeue();
+                break;
+            case 3:
+                tampilkan();
+                break;
+            case 4:
+                cout << "Terima kasih, program selesai." << endl;
+                break;
+            default:
+                cout << "Pilihan tidak valid." << endl;
+        }
+    } while (pilihan != 4);
 
     return 0;
 }
+
